@@ -8,36 +8,45 @@
         * { margin: 0; padding: 0; }
         body { background: transparent; overflow: hidden; width: 100vw; height: 100vh; }
         video { width: 100%; height: 100%; display: none; object-fit: contain; }
+        #status { position: absolute; top: 10px; left: 10px; color: yellow; background: rgba(0,0,0,0.8); padding: 8px; font-family: sans-serif; font-size: 14px; border-radius: 5px; }
     </style>
 </head>
 <body>
 
+    <div id="status">Aguardando sinal...</div>
     <video id="player" src="meu_video.mp4" playsinline muted></video>
 
     <script>
         const player = document.getElementById('player');
+        const status = document.getElementById('status');
+        
+        // Conexão Ably Realtime
         const ably = new Ably.Realtime('xV33tw.9o2_8g:fP1K5sL3K4j7X8z9');
         const channel = ably.channels.get('canal-live-pablo');
 
+        ably.connection.on('connected', () => {
+            status.innerText = "Conectado à Live!";
+            setTimeout(() => { status.style.display = 'none'; }, 3000);
+        });
+
         channel.subscribe('tocar', function(message) {
+            status.style.display = 'block';
+            status.innerText = "Recebido! Tocando vídeo...";
+            
             player.currentTime = 0;
             player.style.display = 'block';
             
-            // Toca com som ativado
-            player.muted = false;
-            const promise = player.play();
-            
-            if (promise !== undefined) {
-                promise.catch(error => {
-                    // Se o navegador bloquear o som, toca mudo
-                    player.muted = true;
-                    player.play();
-                });
-            }
+            player.play().then(() => {
+                player.muted = false;
+            }).catch(err => {
+                player.muted = true;
+                player.play();
+            });
         });
 
         player.onended = () => {
             player.style.display = 'none';
+            status.style.display = 'none';
         };
     </script>
 </body>
