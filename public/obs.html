@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Exibição na Live</title>
-    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.7.2.2.min.js"></script>
     <style>
         body {
             margin: 0;
@@ -20,22 +20,32 @@
 </head>
 <body>
 
-    <video id="player"></video>
+    <video id="player" src="meu_video.mp4"></video>
 
     <script>
-        const socket = io();
         const player = document.getElementById('player');
 
-        socket.on('tocar-video', (urlVideo) => {
-            // Adiciona um número único no final para garantir que o vídeo recarregue do início
-            player.src = urlVideo + '?t=' + Date.now();
-            player.style.display = 'block';
-            player.play().catch(e => console.log('Erro na reprodução:', e));
+        const pubnub = new PubNub({
+            subscribeKey: "sub-c-demo",
+            userId: "obs-studio"
         });
 
-        // Quando o vídeo terminar de tocar, oculta a tela
+        pubnub.subscribe({
+            channels: ["canal-live-tiktok"]
+        });
+
+        pubnub.addListener({
+            message: function(event) {
+                if (event.message.acao === "tocar") {
+                    player.currentTime = 0;
+                    player.style.display = "block";
+                    player.play().catch(e => console.log(e));
+                }
+            }
+        });
+
         player.onended = () => {
-            player.style.display = 'none';
+            player.style.display = "none";
         };
     </script>
 </body>
