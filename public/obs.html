@@ -1,1 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { margin: 0; background: transparent; overflow: hidden; }
+        video { width: 100vw; height: 100vh; display: none; object-fit: contain; }
+    </style>
+</head>
+<body>
 
+    <video id="player" src="meu_video.mp4"></video>
+
+    <script>
+        const player = document.getElementById('player');
+
+        // Escuta o clique no botão usando PubNub ou canal de eventos do navegador
+        const ws = new WebSocket('wss://ws.postman-echo.com/raw');
+
+        // Sempre que o botão for clicado online, o vídeo toca
+        window.addEventListener('message', function() {
+            player.style.display = 'block';
+            player.play();
+        });
+
+        player.onended = () => {
+            player.style.display = 'none';
+        };
+    </script>
+</body>
+</html>
