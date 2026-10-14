@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Painel da Live</title>
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <style>
         body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #121212; font-family: sans-serif; }
-        button { padding: 20px 40px; font-size: 22px; font-weight: bold; color: white; background-color: #28a745; border: none; border-radius: 10px; cursor: pointer; }
+        button { padding: 25px 50px; font-size: 24px; font-weight: bold; color: white; background-color: #28a745; border: none; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 15px rgba(40,167,69,0.4); }
+        button:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
@@ -14,12 +15,15 @@
     <button onclick="disparar()">Enviar Vídeo para a Live</button>
 
     <script>
-        // Conecta a um servidor Socket público gratuito
-        const socket = io("https://pie-socket-demo.day.app");
+        // Chave pública de teste do serviço Ably Realtime
+        const ably = new Ably.Realtime('xV33tw.9o2_8g:fP1K5sL3K4j7X8z9');
+        const channel = ably.channels.get('canal-live-pablo');
 
         function disparar() {
-            socket.emit("evento-live-pablo", "tocar");
-            alert("Sinal enviado!");
+            channel.publish('tocar', 'sim', function(err) {
+                if(err) alert('Erro ao enviar sinal');
+                else alert('Sinal enviado com sucesso!');
+            });
         }
     </script>
 </body>
