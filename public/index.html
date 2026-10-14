@@ -2,7 +2,8 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Painel de Controle - Live</title>
+    <title>Painel da Live</title>
+    <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.7.2.2.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,21 +12,21 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #f0f2f5;
+            background-color: #121212;
         }
         button {
-            padding: 20px 40px;
-            font-size: 20px;
+            padding: 25px 50px;
+            font-size: 24px;
             font-weight: bold;
             color: white;
             background-color: #28a745;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
         }
-        button:hover {
-            background-color: #218838;
+        button:active {
+            transform: scale(0.98);
         }
     </style>
 </head>
@@ -34,11 +35,19 @@
     <button onclick="enviarVideo()">Enviar Vídeo para a Live</button>
 
     <script>
+        const pubnub = new PubNub({
+            publishKey: "pub-c-demo",
+            subscribeKey: "sub-c-demo",
+            userId: "painel-controle"
+        });
+
         function enviarVideo() {
-            fetch('/disparar-video', { method: 'POST' })
-                .then(res => res.json())
-                .then(data => alert('Vídeo exibido na Live!'))
-                .catch(err => alert('Erro ao disparar vídeo.'));
+            pubnub.publish({
+                channel: "canal-live-tiktok",
+                message: { acao: "tocar" }
+            }, function(status, response) {
+                alert("Vídeo enviado para a Live!");
+            });
         }
     </script>
 </body>
