@@ -3,51 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>Painel da Live</title>
-    <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.7.2.2.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #121212;
-        }
-        button {
-            padding: 25px 50px;
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
-            background-color: #28a745;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
-        }
-        button:active {
-            transform: scale(0.98);
-        }
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #121212; font-family: sans-serif; }
+        button { padding: 20px 40px; font-size: 22px; font-weight: bold; color: white; background-color: #28a745; border: none; border-radius: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <button onclick="enviarVideo()">Enviar Vídeo para a Live</button>
+    <button onclick="disparar()">Enviar Vídeo para a Live</button>
 
     <script>
-        const pubnub = new PubNub({
-            publishKey: "pub-c-demo",
-            subscribeKey: "sub-c-demo",
-            userId: "painel-controle"
-        });
+        // Conecta a um servidor Socket público gratuito
+        const socket = io("https://pie-socket-demo.day.app");
 
-        function enviarVideo() {
-            pubnub.publish({
-                channel: "canal-live-tiktok",
-                message: { acao: "tocar" }
-            }, function(status, response) {
-                alert("Vídeo enviado para a Live!");
-            });
+        function disparar() {
+            socket.emit("evento-live-pablo", "tocar");
+            alert("Sinal enviado!");
         }
     </script>
 </body>
