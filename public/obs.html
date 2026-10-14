@@ -5,13 +5,14 @@
     <title>Exibição na Live</title>
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <style>
-        body { margin: 0; background: transparent; overflow: hidden; }
-        video { width: 100vw; height: 100vh; display: none; object-fit: contain; }
+        * { margin: 0; padding: 0; }
+        body { background: transparent; overflow: hidden; width: 100vw; height: 100vh; }
+        video { width: 100%; height: 100%; display: none; object-fit: contain; }
     </style>
 </head>
 <body>
 
-    <video id="player" src="meu_video.mp4" playsinline></video>
+    <video id="player" src="meu_video.mp4" playsinline muted></video>
 
     <script>
         const player = document.getElementById('player');
@@ -21,12 +22,19 @@
             if (msg === "tocar") {
                 player.currentTime = 0;
                 player.style.display = "block";
-                player.play().catch(err => console.log("Erro de reprodução:", err));
+                
+                // Toca mudo primeiro para evitar bloqueio do TikTok
+                player.play().then(() => {
+                    player.muted = false;
+                }).catch(err => {
+                    console.log("Erro:", err);
+                });
             }
         });
 
         player.onended = () => {
             player.style.display = "none";
+            player.muted = true;
         };
     </script>
 </body>
