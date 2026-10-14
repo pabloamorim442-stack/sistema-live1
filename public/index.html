@@ -1,1 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel da Live</title>
+    <style>
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #121212; }
+        button { padding: 20px 40px; font-size: 22px; font-weight: bold; color: white; background-color: #28a745; border: none; border-radius: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
 
+    <button onclick="enviar()">Enviar Vídeo para a Live</button>
+
+    <script>
+        function enviar() {
+            // Envia um aviso online usando a API do PieSocket
+            fetch('https://free.plesk.com/broadcast', { method: 'POST' }); 
+            alert('Vídeo disparado!');
+        }
+    </script>
+</body>
+</html>
