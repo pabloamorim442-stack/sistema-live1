@@ -2,21 +2,43 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Painel da Live</title>
+    <title>Painel de Controle - Live</title>
     <style>
-        body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #121212; }
-        button { padding: 20px 40px; font-size: 22px; font-weight: bold; color: white; background-color: #28a745; border: none; border-radius: 10px; cursor: pointer; }
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+        button {
+            padding: 20px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            background-color: #28a745;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        button:hover {
+            background-color: #218838;
+        }
     </style>
 </head>
 <body>
 
-    <button onclick="enviar()">Enviar Vídeo para a Live</button>
+    <button onclick="enviarVideo()">Enviar Vídeo para a Live</button>
 
     <script>
-        function enviar() {
-            // Envia um aviso online usando a API do PieSocket
-            fetch('https://free.plesk.com/broadcast', { method: 'POST' }); 
-            alert('Vídeo disparado!');
+        function enviarVideo() {
+            fetch('/disparar-video', { method: 'POST' })
+                .then(res => res.json())
+                .then(data => alert('Vídeo exibido na Live!'))
+                .catch(err => alert('Erro ao disparar vídeo.'));
         }
     </script>
 </body>

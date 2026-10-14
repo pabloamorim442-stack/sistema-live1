@@ -2,27 +2,38 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <title>Exibição na Live</title>
+    <script src="/socket.io/socket.io.js"></script>
     <style>
-        body { margin: 0; background: transparent; overflow: hidden; }
-        video { width: 100vw; height: 100vh; display: none; object-fit: contain; }
+        body {
+            margin: 0;
+            background: transparent;
+            overflow: hidden;
+        }
+        video {
+            width: 100vw;
+            height: 100vh;
+            display: none;
+            object-fit: contain;
+        }
     </style>
 </head>
 <body>
 
-    <video id="player" src="meu_video.mp4"></video>
+    <video id="player"></video>
 
     <script>
+        const socket = io();
         const player = document.getElementById('player');
 
-        // Escuta o clique no botão usando PubNub ou canal de eventos do navegador
-        const ws = new WebSocket('wss://ws.postman-echo.com/raw');
-
-        // Sempre que o botão for clicado online, o vídeo toca
-        window.addEventListener('message', function() {
+        socket.on('tocar-video', (urlVideo) => {
+            // Adiciona um número único no final para garantir que o vídeo recarregue do início
+            player.src = urlVideo + '?t=' + Date.now();
             player.style.display = 'block';
-            player.play();
+            player.play().catch(e => console.log('Erro na reprodução:', e));
         });
 
+        // Quando o vídeo terminar de tocar, oculta a tela
         player.onended = () => {
             player.style.display = 'none';
         };
