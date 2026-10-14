@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Exibição na Live</title>
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <style>
         * { margin: 0; padding: 0; }
         body { background: transparent; overflow: hidden; width: 100vw; height: 100vh; }
@@ -16,25 +16,28 @@
 
     <script>
         const player = document.getElementById('player');
-        const socket = io("https://pie-socket-demo.day.app");
+        const ably = new Ably.Realtime('xV33tw.9o2_8g:fP1K5sL3K4j7X8z9');
+        const channel = ably.channels.get('canal-live-pablo');
 
-        socket.on("evento-live-pablo", function(msg) {
-            if (msg === "tocar") {
-                player.currentTime = 0;
-                player.style.display = "block";
-                
-                // Toca mudo primeiro para evitar bloqueio do TikTok
-                player.play().then(() => {
-                    player.muted = false;
-                }).catch(err => {
-                    console.log("Erro:", err);
+        channel.subscribe('tocar', function(message) {
+            player.currentTime = 0;
+            player.style.display = 'block';
+            
+            // Toca com som ativado
+            player.muted = false;
+            const promise = player.play();
+            
+            if (promise !== undefined) {
+                promise.catch(error => {
+                    // Se o navegador bloquear o som, toca mudo
+                    player.muted = true;
+                    player.play();
                 });
             }
         });
 
         player.onended = () => {
-            player.style.display = "none";
-            player.muted = true;
+            player.style.display = 'none';
         };
     </script>
 </body>
